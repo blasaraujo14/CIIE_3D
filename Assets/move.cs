@@ -8,11 +8,12 @@ public class move : MonoBehaviour
     Rigidbody cuerpo;
     public float vel;
     [SerializeField] Transform camara;
+    public float ejeY;
 
     // Start is called before the first frame update
     void Start()
     {
-        vel = 50f;
+        vel = 30f;
         cuerpo = GetComponent<Rigidbody>();
     }
 
@@ -21,11 +22,17 @@ public class move : MonoBehaviour
     {
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        //cuerpo.AddForce(new Vector3(h, v, 1)*Time.deltaTime*vel);
-        //cuerpo.Move(new Vector3(h,0,v)*Time.deltaTime*vel+transform.position, transform.rotation);
-        //cuerpo.Move(Vector3.Dot(Vector3.forward, new Vector3(h, 0, v)) * Time.deltaTime * vel + transform.position, transform.rotation);
-        //cuerpo.transform.position = new Vector3(h, 0, v).normalized;
-        //cuerpo.MoveRotation(Quaternion.RotateTowards(Quaternion.Euler(my * 360 * sensibilidad_camara, mx * 360 * sensibilidad_camara, 0), transform.rotation, 1));
-        //cuerpo.transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(my * 360 * sensibilidad_camara, mx * 360 * sensibilidad_camara, 0), 1);
+
+        transform.rotation = h != 0 || v != 0? Quaternion.Euler(transform.rotation.eulerAngles.x, camara.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z) : transform.rotation;
+        cuerpo.Move(transform.forward * v * Time.deltaTime * vel + transform.right * h * Time.deltaTime * vel + transform.position, transform.rotation);
+
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.name);   
+        //other.gameObject.SetActive(false);
     }
 }
+

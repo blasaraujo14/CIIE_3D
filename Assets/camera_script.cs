@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class camera_script : MonoBehaviour
 {
-    [SerializeField] Transform follow;
+    [SerializeField] Transform pibe;
     [SerializeField] float distance = 5;
     [SerializeField] float sensibilidad = 3;
 
@@ -26,7 +26,7 @@ public class camera_script : MonoBehaviour
 
         Quaternion mouseRotation = Quaternion.Euler(-rX*sensibilidad, rY*sensibilidad, 0);
 
-        transform.position = follow.position - mouseRotation*Vector3.forward*distance;
+        transform.position = pibe.position - mouseRotation*Vector3.forward*distance;
         transform.rotation = mouseRotation;
     }
 }
