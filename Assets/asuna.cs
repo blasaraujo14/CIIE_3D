@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.SceneManagement;
 
 public class asuna : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class asuna : MonoBehaviour
     GameObject pieDerecho;
     public bool salto;
     Collider colliderSuelo;
+    bool rifle;
+    bool pistola;
+    float tiempo;
+    [SerializeField] GameObject rifleObj;
 
     // Start is called before the first frame update
     void Start()
@@ -31,12 +36,18 @@ public class asuna : MonoBehaviour
         cuerpo = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         animator.SetBool("parado", true);
+        rifle = false;
+        Debug.Log(transform.childCount);
+        //rifleObj = transform.Find("mixamorig:Hips").gameObject;
+        rifleObj.SetActive(false);
+        pistola = false;
+        tiempo = 3;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //velosidat = cuerpo.velocity.y;
+        /*
         foreach (AnimatorControllerParameter p in animator.parameters)
         {
             if (p.type == AnimatorControllerParameterType.Trigger)
@@ -44,8 +55,7 @@ public class asuna : MonoBehaviour
                 animator.ResetTrigger(p.name);
             }
         }
-        //animator.ResetTrigger("Patada");
-        //animator.ResetTrigger("salto");
+        */
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
         if (Input.GetKey(KeyCode.LeftShift) && salto)
@@ -54,7 +64,7 @@ public class asuna : MonoBehaviour
             vel = 40f;
         }
 
-        else
+        else if (salto)
         {
             animator.SetBool("corre", false);
             vel = 20f;
@@ -64,7 +74,6 @@ public class asuna : MonoBehaviour
             vel = (float)(vel * 0.5);
         }
         transform.rotation = h != 0 || v != 0 ? Quaternion.Euler(transform.rotation.eulerAngles.x, camara.transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z) : transform.rotation;
-        //transform.Translate(transform.position + new Vector3(0, - 0.5f, 0));
         cuerpo.Move((transform.forward * v + transform.right * h) * Time.deltaTime * vel + transform.position, transform.rotation);
         //cuerpo.addForce((transform.forward * v + transform.right * h) * Time.deltaTime * vel, ForceMode.VelocityChange);
         animator.SetFloat("Direccion", v);
@@ -79,9 +88,34 @@ public class asuna : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Q))
         {
-            animator.SetTrigger("Patada");
+            //animator.SetTrigger("Patada");
         }
-        
+        /*
+        if(Input.GetKey(KeyCode.P))
+        {
+            animator.SetBool("rifle", rifle);
+            rifle = !rifle;
+        }
+        */
+        if(rifle)
+        {
+            tiempo -= Time.deltaTime;
+        }
+        if (tiempo < 0)
+        {
+            animator.SetBool("rifle", false);
+            rifleObj.SetActive(false);
+            tiempo = 3;
+
+        }
         if (Time.frameCount >= 300)Profiler.EndSample();
+    }
+
+    public void cambiaArma(String arma)
+    {
+        rifle = true;
+        animator.SetBool("rifle", true);
+        rifleObj.SetActive(true);
+        tiempo = 3;
     }
 }
