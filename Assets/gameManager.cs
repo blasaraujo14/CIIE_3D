@@ -11,52 +11,61 @@ using UnityEngine.UIElements;
 public class GameManager : MonoBehaviour
 {
     asuna pp;
-    public float time;
+    float itemTimer;
+    float enemyTimer;
     ArrayList activeItems;
     float[,] LIMITES = new float[2,2] { { 40, -12 }, { -12, 40 } };
     float ALTURAITEMS = 0.5f;
+    float ALTURAENEMY = 1f;
     GameObject ph;
+    itemsCollider nose;
     Vector3 phPosition = new Vector3 (0,-12f,0);
-    UnityEngine.Object[] ogPrefabs;
+    UnityEngine.Object[] itemPrefabs;
+    UnityEngine.Object[] enemyPrefabs;
 
     // Start is called before the first frame update
     void Start()
     {
         pp = GameObject.FindGameObjectWithTag("Player").GetComponent<asuna>();
-        time = 5;
+        itemTimer = 5;
+        enemyTimer = 5;
         activeItems = new ArrayList();
         ph = GameObject.Find("placeholder");
-        ogPrefabs = Resources.LoadAll("Items");
+        nose = ph.GetComponent<itemsCollider>();
+        itemPrefabs = Resources.LoadAll("Items");
+        enemyPrefabs = Resources.LoadAll("Enemigos");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (time < 0)
+        if (itemTimer < 0)
         {
-            time = 5;
-            activeItems.Add(spawnItem());
+            itemTimer = 5;
+            activeItems.Add(spawn((GameObject)itemPrefabs[UnityEngine.Random.Range(0, itemPrefabs.Length)], ALTURAITEMS));
         }
-        else
+        else itemTimer -= Time.deltaTime;
+        if (enemyTimer < 0)
         {
-            time -= Time.deltaTime;
+            enemyTimer = 5;
+            activeItems.Add(spawn((GameObject)enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)], ALTURAENEMY));
         }
+        else enemyTimer -= Time.deltaTime;
     }
 
-    int spawnItem()
+    int spawn(GameObject prefab, float altura)
     {
-        itemsCollider nose = ph.GetComponent<itemsCollider>();
         do
         {
             ph.transform.position = new Vector3(
-                UnityEngine.Random.Range(LIMITES[0, 0], LIMITES[1, 0]), ALTURAITEMS, UnityEngine.Random.Range(LIMITES[0, 1], LIMITES[1, 1]));
+                UnityEngine.Random.Range(LIMITES[0, 0], LIMITES[1, 0]), altura, UnityEngine.Random.Range(LIMITES[0, 1], LIMITES[1, 1]));
         } while (nose.nose);
-        Debug.Log(ph.transform.position);
         Vector3 posItem = ph.transform.position;
-        GameObject nuevo = GameObject.Instantiate((GameObject)ogPrefabs[UnityEngine.Random.Range(0,ogPrefabs.Length)], posItem, Quaternion.identity);
+        GameObject nuevo = GameObject.Instantiate(prefab, posItem, Quaternion.identity);
         ph.transform.position = phPosition;
         return nuevo.GetInstanceID();
     }
+
     public void recoge(string name)
     {
         pp.cambiaArma(name);

@@ -13,16 +13,17 @@ public class asuna : MonoBehaviour
     [SerializeField] Transform camara;
     public float ejeY;
     Animator animator;
-    float velocidadEn0;
     public float velosidat;
     public float fuerzaSalto;
-    GameObject pieDerecho;
     public bool salto;
-    Collider colliderSuelo;
     bool rifle;
     bool pistola;
     float tiempo;
+    float deltaDisparo;
+    float CADENCIARIFLE = 0.2f;
     [SerializeField] GameObject rifleObj;
+    GameObject bala;
+    GameObject puntaBala;
 
     // Start is called before the first frame update
     void Start()
@@ -37,16 +38,19 @@ public class asuna : MonoBehaviour
         animator = GetComponent<Animator>();
         animator.SetBool("parado", true);
         rifle = false;
-        Debug.Log(transform.childCount);
         //rifleObj = transform.Find("mixamorig:Hips").gameObject;
         rifleObj.SetActive(false);
         pistola = false;
-        tiempo = 3;
+        tiempo = 10;
+        deltaDisparo = 0;
+        bala = (GameObject)Resources.Load("Bala");
+        puntaBala = rifleObj.transform.Find("PuntaRifle").gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
+        deltaDisparo += Time.deltaTime;
         /*
         foreach (AnimatorControllerParameter p in animator.parameters)
         {
@@ -90,13 +94,13 @@ public class asuna : MonoBehaviour
         {
             //animator.SetTrigger("Patada");
         }
-        /*
-        if(Input.GetKey(KeyCode.P))
+        if (Input.GetMouseButton(0))
         {
-            animator.SetBool("rifle", rifle);
-            rifle = !rifle;
+            if (rifle)
+            {
+                dispara();
+            }
         }
-        */
         if(rifle)
         {
             tiempo -= Time.deltaTime;
@@ -104,8 +108,10 @@ public class asuna : MonoBehaviour
         if (tiempo < 0)
         {
             animator.SetBool("rifle", false);
+            animator.SetTrigger("arma");
             rifleObj.SetActive(false);
-            tiempo = 3;
+            rifle = false;
+            tiempo = 10;
 
         }
         if (Time.frameCount >= 300)Profiler.EndSample();
@@ -115,7 +121,18 @@ public class asuna : MonoBehaviour
     {
         rifle = true;
         animator.SetBool("rifle", true);
+        animator.SetTrigger("arma");
+        //animator.SetTrigger("rifle");
         rifleObj.SetActive(true);
-        tiempo = 3;
+        tiempo = 10;
+    }
+
+    void dispara()
+    {
+        if (deltaDisparo > CADENCIARIFLE)
+        {
+            GameObject.Instantiate(bala, puntaBala.transform.position, transform.rotation);
+            deltaDisparo = 0;
+        }
     }
 }

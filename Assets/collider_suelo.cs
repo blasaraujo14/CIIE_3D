@@ -5,12 +5,10 @@ using UnityEngine;
 public class collider_suelo : MonoBehaviour
 {
     asuna asunaScript;
-    Collider collider;
     // Start is called before the first frame update
     void Start()
     {
         asunaScript = GetComponentInParent<asuna>();
-        collider = GetComponent<Collider>();
     }
 
     // Update is called once per frame
