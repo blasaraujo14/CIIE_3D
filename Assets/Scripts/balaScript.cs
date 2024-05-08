@@ -7,7 +7,7 @@ public class balaScript : MonoBehaviour
     float timer;
     void Start()
     {
-        GetComponent<Rigidbody>().AddForce(transform.forward*40, ForceMode.Impulse);
+        GetComponent<Rigidbody>().AddForce(transform.forward*60, ForceMode.Impulse);
         Destroy(gameObject, 10);
     }
 

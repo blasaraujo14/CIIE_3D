@@ -11,16 +11,19 @@ public class LevelChangeLogic : MonoBehaviour
     public bool LevelChange;
 
     public int CurrentLevel;
+    GameObject texto;
 
     void Start()
     {
-        
+        texto = transform.Find("TextoPortal").gameObject;
+        texto.SetActive(false);
+        LevelChange = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (LevelChange){
+        if (LevelChange && Input.GetKey(KeyCode.F)){
             
             if (CurrentLevel > 2){
                 CurrentLevel = 0;
@@ -39,5 +42,15 @@ public class LevelChangeLogic : MonoBehaviour
 
         SceneManager.LoadScene(level);
 
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        texto.SetActive(true);
+        LevelChange = true;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        texto.SetActive(false);
+        LevelChange = false;
     }
 }

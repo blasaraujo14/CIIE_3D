@@ -26,10 +26,12 @@ public class asuna : MonoBehaviour
     float CADENCIARIFLE = 0.2f;
     [SerializeField] GameObject rifleObj;
     [SerializeField] GameObject pistolaObj;
+    [SerializeField] GameObject nudillo;
     public int municion;
     GameObject bala;
     GameObject puntaBala;
     public Text municionText;
+    public bool golpe;
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +54,7 @@ public class asuna : MonoBehaviour
         bala = (GameObject)Resources.Load("Bala");
         puntaBala = rifleObj.transform.Find("PuntaRifle").gameObject;
         municionText.text = "";
+        golpe = false;
     }
 
     // Update is called once per frame
@@ -67,6 +70,7 @@ public class asuna : MonoBehaviour
             }
         }
         */
+        animator.ResetTrigger("golpe");
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
         if (Input.GetMouseButton(0))
@@ -81,6 +85,10 @@ public class asuna : MonoBehaviour
             if (pistola)
             {
                 dispara(0);
+            }
+            else if (!rifle)
+            {
+                golpeEvent(0);
             }
         }
         if (Input.GetKey(KeyCode.LeftShift) && salto)
@@ -134,6 +142,11 @@ public class asuna : MonoBehaviour
             rifle = false;
             pistola = false;
         }
+        if (golpe)
+        {
+            animator.SetTrigger("golpe");
+            //nudillo.SetActive(true);
+        }
     }
 
     public void cambiaArma(String arma)
@@ -175,6 +188,16 @@ public class asuna : MonoBehaviour
                 GameObject.Instantiate(bala, puntaBala.transform.position, camara.rotation*Quaternion.Euler(0,0,0));
                 deltaDisparo = 0;
             }
+        }
+    }
+
+    public void golpeEvent(int inicio)
+    {
+        golpe = inicio == 0;
+        nudillo.SetActive(inicio == 0);
+        if (inicio == 0)
+        {
+            animator.SetTrigger("golpe");
         }
     }
 }

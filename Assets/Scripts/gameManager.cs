@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         nose = ph.GetComponent<itemsCollider>();
         itemPrefabs = Resources.LoadAll("Items");
         enemyPrefabs = Resources.LoadAll("Enemigos");
-        numEnemigos = enemigosSpawn = 10;
+        numEnemigos = enemigosSpawn = 2;
         numEnemigosText.text = numEnemigos.ToString();
         portal = GameObject.Find("Dark Singularity");
         textoPortal = GameObject.Find("TextoPortal");
@@ -98,7 +98,6 @@ public class GameManager : MonoBehaviour
             if (--numEnemigos == 0)
             {
                 portal.SetActive(true);
-                textoPortal.SetActive(true);
             }
             numEnemigosText.text = numEnemigos.ToString();
         }
