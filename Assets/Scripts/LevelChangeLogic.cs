@@ -32,6 +32,7 @@ public class LevelChangeLogic : MonoBehaviour
                 CurrentLevel = CurrentLevel + 1;
                 }
             
+
             OnLevelChange(CurrentLevel);
 
         }
@@ -40,7 +41,8 @@ public class LevelChangeLogic : MonoBehaviour
 
     public void OnLevelChange(int level){
 
-        SceneManager.LoadScene(level);
+        Debug.Log(SceneManager.loadedSceneCount);
+        SceneManager.LoadScene(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().map.sigEscena);
 
     }
     private void OnTriggerEnter(Collider other)

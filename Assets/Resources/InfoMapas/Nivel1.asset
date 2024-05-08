@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f22d029acd0244597ca2c9e2609ff6, type: 3}
+  m_Name: Nivel1
+  m_EditorClassIdentifier: 
+  LIMITE11: 40
+  LIMITE12: -12
+  LIMITE21: -12
+  LIMITE22: 40
+  enemigosA: 3
+  enemigosB: 0
+  enemigosC: 0
+  enemigosD: 0
+  ALTURAITEMS: 0.5
+  ALTURAENEMY: 1.5
+  jefe: 0
+  origen: {x: 31, y: 1, z: 22}
+  posPortal: {x: -9, y: 2, z: 14}
+  sigEscena: Nivel2

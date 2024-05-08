@@ -8,50 +8,57 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public MapInfo map;
     asuna pp;
     float itemTimer;
     float enemyTimer;
     ArrayList activeItems;
-    float[,] LIMITES = new float[2,2] { { 40, -12 }, { -12, 40 } };
-    float ALTURAITEMS = 0.5f;
-    float ALTURAENEMY = 1.5f;
+    //float[,] LIMITES = new float[2,2] { { 40, -12 }, { -12, 40 } };
+    float[,] LIMITES;
+    float ALTURAITEMS;
+    float ALTURAENEMY;
     GameObject ph;
     itemsCollider nose;
-    Vector3 phPosition = new Vector3 (0,-12f,0);
+    Vector3 phPosition;
     UnityEngine.Object[] itemPrefabs;
     UnityEngine.Object[] enemyPrefabs;
-    public int numEnemigos;
+    int numEnemigos;
     int enemigosSpawn;
-    public Text numEnemigosText;
-    GameObject portal;
-    GameObject textoPortal;
+    Text numEnemigosText;
 
     // Start is called before the first frame update
     void Start()
     {
-        pp = GameObject.FindGameObjectWithTag("Player").GetComponent<asuna>();
+        string nivel = SceneManager.GetActiveScene().name;
+        map = (MapInfo)Resources.Load("InfoMapas/" + nivel);
+        pp = Instantiate(Resources.Load("PrefabJugador"), map.origen, Quaternion.identity).GetComponent<asuna>();
+        //pp = GameObject.FindGameObjectWithTag("Player").GetComponent<asuna>();
         itemTimer = 5;
         enemyTimer = 5;
         activeItems = new ArrayList();
+        LIMITES = new float[2, 2] { { map.LIMITE11, map.LIMITE12 }, { map.LIMITE21, map.LIMITE22 } };
+        ALTURAITEMS = map.ALTURAITEMS;
+        ALTURAENEMY = map.ALTURAENEMY;
+        //ph = (GameObject)Instantiate(Resources.Load("placeholder"), new Vector3(0,-12,0), Quaternion.identity, transform);
         ph = GameObject.Find("placeholder");
         nose = ph.GetComponent<itemsCollider>();
         itemPrefabs = Resources.LoadAll("Items");
         enemyPrefabs = Resources.LoadAll("Enemigos");
-        numEnemigos = enemigosSpawn = 2;
+        numEnemigos = enemigosSpawn = map.enemigosA+map.enemigosB+map.enemigosC+map.enemigosD;
+        numEnemigosText = ((GameObject)Instantiate(Resources.Load("UI"))).transform.Find("Enemigos").Find("Text (Legacy)").gameObject.GetComponent<Text>();
         numEnemigosText.text = numEnemigos.ToString();
-        portal = GameObject.Find("Dark Singularity");
-        textoPortal = GameObject.Find("TextoPortal");
-        portal.SetActive(false);
-        textoPortal.SetActive(false);
+        phPosition = ph.transform.position;
+        //portal = GameObject.Find("Dark Singularity");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (itemTimer < 0)
+        if (itemTimer < 0 && numEnemigos > 0)
         {
             itemTimer = 5;
             activeItems.Add(spawn((GameObject)itemPrefabs[UnityEngine.Random.Range(0, itemPrefabs.Length)], ALTURAITEMS));
@@ -97,7 +104,7 @@ public class GameManager : MonoBehaviour
         {
             if (--numEnemigos == 0)
             {
-                portal.SetActive(true);
+                Instantiate(Resources.Load("Dark Singularity"), map.posPortal, Quaternion.identity);
             }
             numEnemigosText.text = numEnemigos.ToString();
         }

@@ -19,6 +19,9 @@ public class CameraOrbit : MonoBehaviour
         camera = GetComponent<Camera>();
 
         CalculateNearPlaneSize();
+        follow = GameObject.FindGameObjectWithTag("Player").transform.Find("cabeza");
+        maxDistance = 5;
+        sensitivity = new Vector2 (2, 2);
     }
 
     private void CalculateNearPlaneSize() //calculamos el plano cercano a la camara

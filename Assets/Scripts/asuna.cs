@@ -12,7 +12,7 @@ public class asuna : MonoBehaviour
 {
     Rigidbody cuerpo;
     public float vel;
-    [SerializeField] Transform camara;
+    Transform camara;
     public float ejeY;
     Animator animator;
     public float velosidat;
@@ -20,8 +20,6 @@ public class asuna : MonoBehaviour
     public bool salto;
     bool rifle;
     bool pistola;
-    bool pistolaCanShoot;
-    float tiempoItem;
     float deltaDisparo;
     float CADENCIARIFLE = 0.2f;
     [SerializeField] GameObject rifleObj;
@@ -30,7 +28,7 @@ public class asuna : MonoBehaviour
     public int municion;
     GameObject bala;
     GameObject puntaBala;
-    public Text municionText;
+    Text municionText;
     public bool golpe;
 
     // Start is called before the first frame update
@@ -41,18 +39,19 @@ public class asuna : MonoBehaviour
         //colliderSuelo = GameObject.Find("Collider_suelo").GetComponent<Collider>();
         municion = 0;
         vel = 20f;
+        camara = GameObject.FindGameObjectWithTag("MainCamera").transform;
         fuerzaSalto = 30f;
         salto = false;
         cuerpo = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         animator.SetBool("parado", true);
-        pistolaCanShoot = true;
         //rifleObj = transform.Find("mixamorig:Hips").gameObject;
         rifleObj.SetActive(false);
         pistolaObj.SetActive(false);
         deltaDisparo = 0;
         bala = (GameObject)Resources.Load("Bala");
         puntaBala = rifleObj.transform.Find("PuntaRifle").gameObject;
+        municionText = GameObject.Find("currAmo").GetComponent<Text>();
         municionText.text = "";
         golpe = false;
     }
