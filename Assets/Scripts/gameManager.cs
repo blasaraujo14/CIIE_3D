@@ -69,7 +69,12 @@ public class GameManager : MonoBehaviour
         musica = mainCamera.GetComponent<AudioSource>();
         sfx = mainCamera.transform.Find("SFX").gameObject.GetComponent<AudioSource>();
         ChangeVolume();
-        if (map.jefe) Instantiate(Resources.Load("AnimacionJefeFinal"));
+        if (map.jefe)
+        {
+            cameraScript.enabled = false;
+            pp.enabled = false;
+            Instantiate(Resources.Load("AnimacionJefeFinal"));
+        }
         //portal = GameObject.Find("Dark Singularity");
     }
 
