@@ -14,7 +14,7 @@ public class MainMenu : MonoBehaviour
         musica = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
         sfx = GameObject.FindGameObjectWithTag("MainCamera").transform.Find("SFX").gameObject.GetComponent<AudioSource>();
         ChangeVolume();
-        PlayerPrefs.SetString("mapInfo", "Nivel1");
+        PlayerPrefs.SetString("mapInfo", "Nivel1Jefe");
         PlayerPrefs.Save();
     }
     public void GameScene(){
