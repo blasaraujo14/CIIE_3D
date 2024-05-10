@@ -6,7 +6,6 @@ using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -26,16 +25,28 @@ public class GameManager : MonoBehaviour
     Vector3 phPosition;
     UnityEngine.Object[] itemPrefabs;
     UnityEngine.Object[] enemyPrefabs;
+    public GameObject jefe;
     int numEnemigos;
     int enemigosSpawn;
     Text numEnemigosText;
+    CameraOrbit cameraScript;
+    AudioSource musica;
+    public AudioSource sfx;
+    float distSuelo;
+    GameObject mapObj;
 
     // Start is called before the first frame update
     void Start()
     {
-        string nivel = SceneManager.GetActiveScene().name;
-        map = (MapInfo)Resources.Load("InfoMapas/" + nivel);
+        /*******aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa***************/
+        //if(PlayerPrefs.GetString("mapInfo")==null) map = (MapInfo)Resources.Load("InfoMapas/" + SceneManager.GetActiveScene().name);
+        /*******aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa***************/
+
+        map = (MapInfo)Resources.Load("InfoMapas/" + PlayerPrefs.GetString("mapInfo"));
+        PlayerPrefs.SetString("mapInfo", map.sigEscena);
+        PlayerPrefs.Save();
         pp = Instantiate(Resources.Load("PrefabJugador"), map.origen, Quaternion.identity).GetComponent<asuna>();
+        if (map.jefe) jefe = (GameObject)Instantiate(Resources.Load("finalboss"), new Vector3(0,1,0), Quaternion.identity);
         //pp = GameObject.FindGameObjectWithTag("Player").GetComponent<asuna>();
         itemTimer = 5;
         enemyTimer = 5;
@@ -52,12 +63,23 @@ public class GameManager : MonoBehaviour
         numEnemigosText = ((GameObject)Instantiate(Resources.Load("UI"))).transform.Find("Enemigos").Find("Text (Legacy)").gameObject.GetComponent<Text>();
         numEnemigosText.text = numEnemigos.ToString();
         phPosition = ph.transform.position;
+        distSuelo = map.distSuelo;
+        GameObject mainCamera = (GameObject)Instantiate(Resources.Load("Camera"));
+        cameraScript = mainCamera.GetComponent<CameraOrbit>();
+        musica = mainCamera.GetComponent<AudioSource>();
+        sfx = mainCamera.transform.Find("SFX").gameObject.GetComponent<AudioSource>();
+        ChangeVolume();
+        if (map.jefe) Instantiate(Resources.Load("AnimacionJefeFinal"));
         //portal = GameObject.Find("Dark Singularity");
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (pp.transform.position.y < distSuelo)
+        {
+            pp.transform.position = new Vector3(pp.transform.position.x, distSuelo + 1f, pp.transform.position.z);
+        }
         if (itemTimer < 0 && numEnemigos > 0)
         {
             itemTimer = 5;
@@ -71,9 +93,30 @@ public class GameManager : MonoBehaviour
             activeItems.Add(spawn((GameObject)enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)], ALTURAENEMY));
         }
         else enemyTimer -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MenuPausa", LoadSceneMode.Additive);
+            enabled = false;
+        }
     }
 
-    int spawn(GameObject prefab, float altura)
+    private void OnDisable()
+    {
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        if (pp != null) pp.enabled = false;
+        if (cameraScript != null) cameraScript.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        if (pp != null) pp.enabled = true;
+        if(cameraScript != null) cameraScript.enabled = true;
+    }
+
+    GameObject spawn(GameObject prefab, float altura)
     {
         do
         {
@@ -83,7 +126,8 @@ public class GameManager : MonoBehaviour
         Vector3 posItem = ph.transform.position;
         GameObject nuevo = GameObject.Instantiate(prefab, posItem, Quaternion.identity);
         ph.transform.position = phPosition;
-        return nuevo.GetInstanceID();
+        //return nuevo.GetInstanceID();
+        return nuevo;
     }
 
     public void recoge(string name)
@@ -91,15 +135,15 @@ public class GameManager : MonoBehaviour
         pp.cambiaArma(name);
     }
 
-    public void destruye(int id)
+    public void destruye(GameObject obj)
     {
         /*
         int[] a = new int[] { id };
         GameObject.SetGameObjectsActive(new Unity.Collections.NativeArray<int>(a, Allocator.Temp), false);
         Debug.Log("destruido");
         */
-        GameObject obj = (GameObject)EditorUtility.InstanceIDToObject(id);
-        activeItems.Remove(id);
+        //GameObject obj = (GameObject)EditorUtility.InstanceIDToObject(id);
+        activeItems.Remove(obj);
         if (obj.tag == "Enemigo")
         {
             if (--numEnemigos == 0)
@@ -109,5 +153,17 @@ public class GameManager : MonoBehaviour
             numEnemigosText.text = numEnemigos.ToString();
         }
         GameObject.Destroy(obj);
+    }
+    public void Muerte()
+    {
+        SceneManager.LoadScene("MenuMuerte", LoadSceneMode.Additive);
+        enabled = false;
+    }
+
+    public void ChangeVolume()
+    {
+
+        musica.volume = PlayerPrefs.GetFloat("Musica");
+        sfx.volume = PlayerPrefs.GetFloat("SFX");
     }
 }

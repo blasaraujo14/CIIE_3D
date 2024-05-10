@@ -4,24 +4,33 @@ using UnityEngine;
 
 public class CameraOrbit : MonoBehaviour
 {
-    private Vector2 angle = new Vector2(90 * Mathf.Deg2Rad, 0); //angulo en el que la camara esta rotando(se inicializa y se convierte a gradianes)
+    private Vector2 angle = new Vector2(90 * Mathf.Deg2Rad, 0); //angulo en el que la camara esta rotando(se inicializa y se convierte a gradianes)   
     private new Camera camera;
     private Vector2 nearPlaneSize; //tamaño del plano cercano
 
-    public Transform follow; //objeto al que va a seguir la camara(debe ser un objeto vacio)
-    public float maxDistance; //distancia a la que vamos a tener la camara
-    public Vector2 sensitivity; //esto va a ser la sensibilidad de la camara
+    Transform follow; //objeto al que va a seguir la camara(debe ser un objeto vacio)
+    float maxDistance; //distancia a la que vamos a tener la camara
+    Vector2 sensitivity; //esto va a ser la sensibilidad de la camara
+
+    AudioSource audioSource;
+    AudioClip bucle;
 
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = (AudioClip)Resources.Load("Audios/Musica/CombatInicio");
+        audioSource.Play();
+        bucle = (AudioClip)Resources.Load("Audios/Musica/CombatBucle");
+        
         Cursor.lockState = CursorLockMode.Locked; //vamos a bloquear el cursor para que no salga de la ventana del juego
         camera = GetComponent<Camera>();
+        follow = GameObject.FindGameObjectWithTag("Player").transform.Find("cabeza");
+
+        maxDistance = 5;
+        sensitivity = new Vector2(2, 2);
 
         CalculateNearPlaneSize();
-        follow = GameObject.FindGameObjectWithTag("Player").transform.Find("cabeza");
-        maxDistance = 5;
-        sensitivity = new Vector2 (2, 2);
     }
 
     private void CalculateNearPlaneSize() //calculamos el plano cercano a la camara
@@ -66,6 +75,13 @@ public class CameraOrbit : MonoBehaviour
             angle.y = Mathf.Clamp(angle.y, -80 * Mathf.Deg2Rad, 80 * Mathf.Deg2Rad); //hacemos que la camara solo se pueda mover entre dos valores (para que no pase al otro ladod el jugador)
             //limitamos la camara entre dos valores (valor, min, max)
         }
+
+        if(!audioSource.isPlaying)
+        {
+            audioSource.clip = bucle;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
     }
 
     // Update is called once per frame
@@ -76,6 +92,7 @@ public class CameraOrbit : MonoBehaviour
             -Mathf.Sin(angle.y),//el menos es porque tenemos invertida la cámara
             -Mathf.Sin(angle.x) * Mathf.Cos(angle.y)
             );
+
         RaycastHit hit;
         float distance = maxDistance;
         Vector3[] points = GetCameraCollisionPoints(direction);

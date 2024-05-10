@@ -6,15 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class MenuMuerte : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-    // Update is called once per frame
-
+    
+    private void Start()
+    {
+        AudioSource source = gameObject.GetComponent<AudioSource>();
+        source.volume = PlayerPrefs.GetFloat("SFX");
+        source.Play();
+    }
     public void Reiniciar(){
         
         //recargar escena principal
-        SceneManager.UnloadSceneAsync("MenuMuerte");
-        Cursor.lockState = CursorLockMode.Locked;
+        SceneManager.LoadScene("MenuPrincipal");
     }
 
     public void Salir(){

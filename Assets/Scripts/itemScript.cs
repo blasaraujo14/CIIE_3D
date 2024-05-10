@@ -19,12 +19,13 @@ public class itemScript : MonoBehaviour
     {
         timer -= Time.deltaTime;
         if (timer < 0 )
-            gm.destruye(transform.parent.gameObject.GetInstanceID());
+            gm.destruye(transform.parent.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         gm.recoge(this.gameObject.name);
-        gm.destruye(transform.parent.gameObject.GetInstanceID());
+        //gm.destruye(transform.parent.gameObject.GetInstanceID());
+        gm.destruye(transform.parent.gameObject);
     }
 }

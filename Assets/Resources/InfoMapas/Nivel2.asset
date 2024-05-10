@@ -21,8 +21,9 @@ MonoBehaviour:
   enemigosC: 0
   enemigosD: 0
   ALTURAITEMS: 3.5
-  ALTURAENEMY: 4.5
+  ALTURAENEMY: 3.5
   jefe: 0
-  origen: {x: 0, y: 5.5, z: 27}
+  origen: {x: 0, y: 3.8, z: 18}
   posPortal: {x: 0, y: 5.5, z: -12}
   sigEscena: Nivel3
+  distSuelo: 3

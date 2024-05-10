@@ -41,18 +41,24 @@ public class LevelChangeLogic : MonoBehaviour
 
     public void OnLevelChange(int level){
 
-        Debug.Log(SceneManager.loadedSceneCount);
-        SceneManager.LoadScene(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().map.sigEscena);
+        //Debug.Log(SceneManager.loadedSceneCount);
+        SceneManager.LoadScene("Nivel" + GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().map.sigEscena[5]);
 
     }
     private void OnTriggerEnter(Collider other)
     {
-        texto.SetActive(true);
-        LevelChange = true;
+        if (other.tag == "Player")
+        {
+            texto.SetActive(true);
+            LevelChange = true;
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        texto.SetActive(false);
-        LevelChange = false;
+        if(other.tag == "Player")
+        {
+            texto.SetActive(false);
+            LevelChange = false;
+        }
     }
 }

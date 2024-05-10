@@ -20,4 +20,5 @@ public class MapInfo : ScriptableObject
     public Vector3 origen;
     public Vector3 posPortal;
     public string sigEscena;
+    public float distSuelo;
 }
