@@ -394,6 +394,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ef66ba3c7998b486c97f022ee91fc537, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -8191740002585371210, guid: ef66ba3c7998b486c97f022ee91fc537, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -14.825243

@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         numEnemigosText.text = numEnemigos.ToString();
         phPosition = ph.transform.position;
         distSuelo = map.distSuelo;
-        GameObject mainCamera = (GameObject)Instantiate(Resources.Load("Camera"));
+        GameObject mainCamera = (GameObject)Instantiate(Resources.Load("Camera"), new Vector3(35.65f, 3.29f, 23.50f), Quaternion.Euler(new Vector3(3.8f, 252, 0)));
         cameraScript = mainCamera.GetComponent<CameraOrbit>();
         musica = mainCamera.GetComponent<AudioSource>();
         sfx = mainCamera.transform.Find("SFX").gameObject.GetComponent<AudioSource>();
@@ -73,7 +73,8 @@ public class GameManager : MonoBehaviour
         {
             cameraScript.enabled = false;
             pp.enabled = false;
-            Instantiate(Resources.Load("AnimacionJefeFinal"));
+            Instantiate(Resources.Load("AnimacionJefeFinal")).GetComponent<animacionJefeFinal>().jefe = jefe;
+
         }
         //portal = GameObject.Find("Dark Singularity");
     }
